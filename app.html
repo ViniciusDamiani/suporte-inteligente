@@ -6,6 +6,7 @@
   <title>Painel</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="acervo.css">
 </head>
 <body data-page="app">
   <div class="layout">
@@ -17,9 +18,6 @@
         <button type="button" data-view="tickets">
           <svg viewBox="0 0 24 24"><path d="M4 7a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 000 4v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2a2 2 0 000-4z"/></svg>Tickets
         </button>
-        <button type="button" data-new="ticket">
-          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Novo ticket
-        </button>
 
         <p class="side-label" data-admin>Administração</p>
         <button type="button" data-view="users" data-admin>
@@ -28,8 +26,8 @@
         <button type="button" data-view="teams" data-admin>
           <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Equipes
         </button>
-        <button type="button" data-new="import" data-admin>
-          <svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M4 19h16"/></svg>Importar tickets
+        <button type="button" data-new="user" data-admin>
+          <svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M19 8v6M16 11h6"/></svg>Criar usuário
         </button>
         <button type="button" data-view="stats" data-admin>
           <svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Estatísticas
@@ -55,25 +53,23 @@
       <main class="stage" id="stage">
         <h1>Qual sua dúvida?</h1>
 
+        <section id="knowledge-conversation" class="knowledge-conversation" aria-live="polite"></section>
+        <p class="error home-knowledge-error" id="knowledge-error" role="alert"></p>
+        <section class="results knowledge-results" id="results" aria-live="polite" hidden></section>
+
+        <div class="knowledge-composer">
         <div class="bar-wrap">
           <form class="bar" id="ask-form">
-            <button class="icon" id="plus" type="button" aria-label="Criar novo" aria-haspopup="menu" aria-expanded="false">
-              <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-            </button>
-            <input id="q" type="search" placeholder="Descreva o problema do cliente" autocomplete="off" aria-label="Problema do cliente">
-            <button class="send" id="send" type="submit" aria-label="Buscar soluções">
+            <textarea id="q" rows="1" maxlength="1800" placeholder="Descreva o problema para o assistente" autocomplete="off" aria-label="Problema do cliente ou resposta ao assistente" title="Enter para enviar; Shift + Enter para inserir uma nova linha"></textarea>
+            <button class="send" id="send" type="submit" aria-label="Enviar ao assistente">
               <svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
             </button>
           </form>
-          <div class="menu" id="menu" role="menu" hidden>
-            <button type="button" role="menuitem" data-new="ticket">Novo ticket</button>
-            <button type="button" role="menuitem" data-new="user" data-admin>Cadastrar usuário</button>
-            <button type="button" role="menuitem" data-new="team" data-admin>Criar equipe</button>
-            <button type="button" role="menuitem" data-new="import" data-admin>Importar tickets (CSV)</button>
-          </div>
         </div>
 
-        <section class="results" id="results" aria-live="polite" hidden></section>
+        <div class="knowledge-home-actions"><button class="ghost" type="button" id="knowledge-local">Pesquisar sem IA</button><button class="ghost" type="button" id="knowledge-reset">Nova investigação</button></div>
+        <p class="knowledge-disclosure">O assistente usa o Google Gemini. Envie apenas informações autorizadas para esse serviço.</p>
+        </div>
 
         <nav class="shortcuts" id="shortcuts" aria-label="Seções">
           <button type="button" data-view="tickets">
@@ -219,7 +215,12 @@
     </form>
   </dialog>
 
+  <dialog id="knowledge-document" aria-labelledby="knowledge-document-title">
+    <div class="knowledge-document-head"><h2 id="knowledge-document-title"></h2><button class="ghost" id="knowledge-close" type="button">Fechar</button></div>
+    <div id="knowledge-document-body"></div>
+  </dialog>
   <div class="toast" id="toast" role="status" hidden></div>
+  <script src="acervo.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

@@ -1,0 +1,321 @@
+{
+  "schema_versao": "1.0.0",
+  "pacote_id": "suporte_inteligente_conhecimento",
+  "pacote_versao": "1.0.0",
+  "data_preparacao": "2026-10-30",
+  "modo": "snapshot_completo_dos_arquivos_preparados",
+  "estado": "preparado_e_validado_estruturalmente; revisao_funcional_pendente",
+  "base_caminhos": "relativa_a_este_catalogo",
+  "grupos_principais": [
+    "Tickets",
+    "Regras de Negocio",
+    "Processos"
+  ],
+  "ordem_carga": [
+    "fontes",
+    "entidades_de_conhecimento",
+    "recursos_auxiliares_banco",
+    "vinculos"
+  ],
+  "identidade_atualizacao": "upsert por id; detectar alteracoes por conteudo_sha256; ativar snapshot somente apos validacao integral",
+  "retirada": "Desativar registros ausentes no novo snapshot completo ou inelegiveis; manter auditoria; nao aplicar retirada em carga parcial.",
+  "excluir_da_carga": [
+    "arquivos CSV de origem fora deste pacote",
+    "_historico",
+    "outros pacotes e versoes",
+    "scripts e arquivos intermediarios"
+  ],
+  "arquivos": [
+    {
+      "arquivo": "00_tickets/casos.jsonl",
+      "formato": "jsonl",
+      "papel": "registros",
+      "importar": true,
+      "registros": 10226,
+      "bytes": 26865445,
+      "sha256": "8586a3c6e59606e438e81cdf5ffaf2f020c6a8d7fd12d993febefc5ff7f17e39",
+      "destino_sugerido": "conhecimento",
+      "vetorizacao": "nao_executada; definir_por_tipo_de_conteudo"
+    },
+    {
+      "arquivo": "01_artigos/artigos.jsonl",
+      "formato": "jsonl",
+      "papel": "registros",
+      "importar": true,
+      "registros": 31,
+      "bytes": 27770,
+      "sha256": "866924ef7b5d243d0b4c1e3cdf39793ca37bb01f09ae03e017ba007cb5376832",
+      "destino_sugerido": "conhecimento",
+      "vetorizacao": "nao_executada; definir_por_tipo_de_conteudo"
+    },
+    {
+      "arquivo": "02_regras_negocio/regras.jsonl",
+      "formato": "jsonl",
+      "papel": "registros",
+      "importar": true,
+      "registros": 865,
+      "bytes": 1538029,
+      "sha256": "9e66724015aba5cf2a858c9e09abe252914f80566d9f96276c3532c51df4bdff",
+      "destino_sugerido": "conhecimento",
+      "vetorizacao": "nao_executada; definir_por_tipo_de_conteudo"
+    },
+    {
+      "arquivo": "03_processos/processos.jsonl",
+      "formato": "jsonl",
+      "papel": "registros",
+      "importar": true,
+      "registros": 90,
+      "bytes": 191198,
+      "sha256": "ccd08487c15bbd857e4240d3a8e005cf19c052a9ef12a35ae24027b6b87be884",
+      "destino_sugerido": "conhecimento",
+      "vetorizacao": "nao_executada; definir_por_tipo_de_conteudo"
+    },
+    {
+      "arquivo": "04_banco_dados/interpretacoes.jsonl",
+      "formato": "jsonl",
+      "papel": "registros",
+      "importar": true,
+      "registros": 7,
+      "bytes": 10352,
+      "sha256": "b23c039ca80b09806cf28d9a388c93e5d32b20a897885c87e5c8be3fb45a1047",
+      "destino_sugerido": "conhecimento",
+      "vetorizacao": "nao_executada; definir_por_tipo_de_conteudo"
+    },
+    {
+      "arquivo": "04_banco_dados/objetos.jsonl",
+      "formato": "jsonl",
+      "papel": "registros",
+      "importar": true,
+      "registros": 2407,
+      "bytes": 2138119,
+      "sha256": "bb0f90c8342b5fada7461606ad32f0082eb47d03c6f98377bf1e48ab4b38d34e",
+      "destino_sugerido": "conhecimento",
+      "vetorizacao": "nao_executada; definir_por_tipo_de_conteudo"
+    },
+    {
+      "arquivo": "04_banco_dados/referencia/dicionario_semantico_banco.json",
+      "formato": "json",
+      "papel": "recurso_auxiliar",
+      "importar": true,
+      "registros": null,
+      "bytes": 37062,
+      "sha256": "8fc55ae32d96cf11ba1fbcae502d911e28f26bb6453fa77798613445e22f9bd8",
+      "destino_sugerido": "recursos_banco",
+      "vetorizacao": "nao_vetorizar_diretamente"
+    },
+    {
+      "arquivo": "04_banco_dados/referencia/estrutura_banco.json",
+      "formato": "json",
+      "papel": "recurso_auxiliar",
+      "importar": true,
+      "registros": null,
+      "bytes": 3082257,
+      "sha256": "b4981027ed168256666bebf411e114b3fd179739e9f1005ead7466b2664334b4",
+      "destino_sugerido": "recursos_banco",
+      "vetorizacao": "nao_vetorizar_diretamente"
+    },
+    {
+      "arquivo": "04_banco_dados/referencia/evidencias_banco.json",
+      "formato": "json",
+      "papel": "recurso_auxiliar",
+      "importar": true,
+      "registros": null,
+      "bytes": 8793,
+      "sha256": "1589d8d2bdf9071395d3b1a0856e9e5c23da9086df3e2f5fa9b3640f7ac57024",
+      "destino_sugerido": "recursos_banco",
+      "vetorizacao": "nao_vetorizar_diretamente"
+    },
+    {
+      "arquivo": "04_banco_dados/referencia/relacoes_codigo_banco.json",
+      "formato": "json",
+      "papel": "recurso_auxiliar",
+      "importar": true,
+      "registros": null,
+      "bytes": 463704,
+      "sha256": "ab903ce293f1e532d3bbdfa5cf65dcfb2c9c27e966b99e621f529fcd717ff7a0",
+      "destino_sugerido": "recursos_banco",
+      "vetorizacao": "nao_vetorizar_diretamente"
+    },
+    {
+      "arquivo": "05_triagem/analise_ticket_14729.md",
+      "formato": "md",
+      "papel": "documentacao_controle",
+      "importar": false,
+      "registros": null,
+      "bytes": 13049,
+      "sha256": "dfbe6ebe7aa2038e1999fbe1599aca3fa7cdf4baa87428d13d2d0b803e56a8c6",
+      "destino_sugerido": null,
+      "vetorizacao": "nao_vetorizar_diretamente"
+    },
+    {
+      "arquivo": "05_triagem/cenarios.jsonl",
+      "formato": "jsonl",
+      "papel": "registros",
+      "importar": true,
+      "registros": 1,
+      "bytes": 48862,
+      "sha256": "8dbee2d255da0965cb78b502caa5bd3898f0615220edfed75da8022206910df0",
+      "destino_sugerido": "conhecimento",
+      "vetorizacao": "nao_executada; definir_por_tipo_de_conteudo"
+    },
+    {
+      "arquivo": "05_triagem/modelo_triagem.json",
+      "formato": "json",
+      "papel": "documentacao_controle",
+      "importar": false,
+      "registros": null,
+      "bytes": 54729,
+      "sha256": "da13a7160f9b909d1d0557ac9373eac46fa7c82321e329a3046e4e9afc876f45",
+      "destino_sugerido": null,
+      "vetorizacao": "nao_vetorizar_diretamente"
+    },
+    {
+      "arquivo": "05_triagem/modelo_triagem.md",
+      "formato": "md",
+      "papel": "documentacao_controle",
+      "importar": false,
+      "registros": null,
+      "bytes": 14523,
+      "sha256": "c35921a0e4e18042c7e32d85797759c04f1a5b589b3d70c3bef3921fd8269b10",
+      "destino_sugerido": null,
+      "vetorizacao": "nao_vetorizar_diretamente"
+    },
+    {
+      "arquivo": "06_evidencias/banco.jsonl",
+      "formato": "jsonl",
+      "papel": "registros",
+      "importar": true,
+      "registros": 7,
+      "bytes": 32301,
+      "sha256": "926176d0c4756bb490f70fd838b69c2cf308dc19177590b940e1b6c9a678ac6b",
+      "destino_sugerido": "conhecimento",
+      "vetorizacao": "nao_executada; definir_por_tipo_de_conteudo"
+    },
+    {
+      "arquivo": "06_evidencias/processos.jsonl",
+      "formato": "jsonl",
+      "papel": "registros",
+      "importar": true,
+      "registros": 101,
+      "bytes": 463000,
+      "sha256": "0c3b7706d0630f2e80aa92017b26bf791d8087b7a122420b2cfc2241033df510",
+      "destino_sugerido": "conhecimento",
+      "vetorizacao": "nao_executada; definir_por_tipo_de_conteudo"
+    },
+    {
+      "arquivo": "06_evidencias/regras.jsonl",
+      "formato": "jsonl",
+      "papel": "registros",
+      "importar": true,
+      "registros": 10938,
+      "bytes": 11711044,
+      "sha256": "4cff5a19e83440707b1ad401a66062f5ca9e8523def0273d8ad757330ae691b1",
+      "destino_sugerido": "conhecimento",
+      "vetorizacao": "nao_executada; definir_por_tipo_de_conteudo"
+    },
+    {
+      "arquivo": "06_evidencias/tickets.jsonl",
+      "formato": "jsonl",
+      "papel": "registros",
+      "importar": true,
+      "registros": 62745,
+      "bytes": 68140074,
+      "sha256": "e5883a7843e7710cafabc0c801ff9abcd5194e8c8ed2fa31d6b97b25ecaacbd4",
+      "destino_sugerido": "conhecimento",
+      "vetorizacao": "nao_executada; definir_por_tipo_de_conteudo"
+    },
+    {
+      "arquivo": "07_vinculos/vinculos.jsonl",
+      "formato": "jsonl",
+      "papel": "registros",
+      "importar": true,
+      "registros": 172224,
+      "bytes": 55032899,
+      "sha256": "b906970ad0fff67953c9d0bae289e8e7db6449da5bb018a5f045479aac5c02ac",
+      "destino_sugerido": "vinculos",
+      "vetorizacao": "nao_vetorizar_diretamente"
+    },
+    {
+      "arquivo": "08_fontes/fontes.jsonl",
+      "formato": "jsonl",
+      "papel": "registros",
+      "importar": true,
+      "registros": 61,
+      "bytes": 17095,
+      "sha256": "e80b8a3dedfeb5b311f4a78a9c7745d99db501b9755ad39519ca37e1c5a05ae0",
+      "destino_sugerido": "fontes",
+      "vetorizacao": "nao_vetorizar_diretamente"
+    },
+    {
+      "arquivo": "09_controle/aliases_fontes_triagem.json",
+      "formato": "json",
+      "papel": "documentacao_controle",
+      "importar": false,
+      "registros": null,
+      "bytes": 538,
+      "sha256": "21b536cc45438f952c11da1e45a33de3b4d3ef7baf76f63070edb94fa948eb35",
+      "destino_sugerido": null,
+      "vetorizacao": "nao_vetorizar_diretamente"
+    },
+    {
+      "arquivo": "09_controle/dicionario.json",
+      "formato": "json",
+      "papel": "documentacao_controle",
+      "importar": false,
+      "registros": null,
+      "bytes": 14667,
+      "sha256": "66e470466161e9d38c71504bc1d4c5dcc96809d865f9f2aea4bfacd2da7e17d7",
+      "destino_sugerido": null,
+      "vetorizacao": "nao_vetorizar_diretamente"
+    },
+    {
+      "arquivo": "09_controle/pendencias.jsonl",
+      "formato": "jsonl",
+      "papel": "documentacao_controle",
+      "importar": false,
+      "registros": 0,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "destino_sugerido": null,
+      "vetorizacao": "nao_vetorizar_diretamente"
+    },
+    {
+      "arquivo": "09_controle/schema_entidade.json",
+      "formato": "json",
+      "papel": "documentacao_controle",
+      "importar": false,
+      "registros": null,
+      "bytes": 2311,
+      "sha256": "c99d2b83597d82d22e17acae79caca5039c86f4eb3cf3c836ae032a8e9382036",
+      "destino_sugerido": null,
+      "vetorizacao": "nao_vetorizar_diretamente"
+    },
+    {
+      "arquivo": "09_controle/validacao.json",
+      "formato": "json",
+      "papel": "documentacao_controle",
+      "importar": false,
+      "registros": null,
+      "bytes": 35036,
+      "sha256": "b1f4146bd07f92e2f1e1f90ee40c942226b6d1e46414bcffa46a4e030ac81dc4",
+      "destino_sugerido": null,
+      "vetorizacao": "nao_vetorizar_diretamente"
+    },
+    {
+      "arquivo": "LEIA_PRIMEIRO.md",
+      "formato": "md",
+      "papel": "documentacao_controle",
+      "importar": false,
+      "registros": null,
+      "bytes": 6918,
+      "sha256": "f9bd666611158b0e514deb0d878716c0465e35bd8e578f6d30f979c3b98cf835",
+      "destino_sugerido": null,
+      "vetorizacao": "nao_vetorizar_diretamente"
+    }
+  ],
+  "entidades": 87418,
+  "vinculos": 172224,
+  "pendencias_estruturais": 0,
+  "aprovacao_automatica_de_solucoes": false,
+  "indexacao_executada": false
+}

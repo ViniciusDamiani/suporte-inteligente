@@ -1,0 +1,17 @@
+{
+  "evidencias_atendimento": {
+    "arquivo": "06_evidencias/tickets.jsonl",
+    "campo_id": "dados.evidencia_id",
+    "prefixo_id": "evidencia_00:"
+  },
+  "evidencias_processos": {
+    "arquivo": "06_evidencias/processos.jsonl",
+    "campo_id": "dados.evidencia_id",
+    "prefixo_id": "evidencia_02:"
+  },
+  "esquema_agpr5_referencia_2026_10_30": {
+    "arquivo": "04_banco_dados/referencia/estrutura_banco.json",
+    "campo_id": "objetos.object_id",
+    "prefixo_id": "objeto_banco:agpr5_referencia_2026_10_30:"
+  }
+}

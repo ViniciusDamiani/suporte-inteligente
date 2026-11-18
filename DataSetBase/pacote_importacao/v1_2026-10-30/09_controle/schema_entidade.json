@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Entidade de conhecimento 1.0.0",
+  "type": "object",
+  "required": [
+    "id",
+    "tipo",
+    "grupo_conhecimento",
+    "id_origem",
+    "origem",
+    "metadados",
+    "dados",
+    "conteudo_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 3
+    },
+    "tipo": {
+      "type": "string",
+      "minLength": 1
+    },
+    "grupo_conhecimento": {
+      "enum": [
+        "Tickets",
+        "Regras de Negocio",
+        "Processos",
+        "Transversal"
+      ]
+    },
+    "id_origem": {
+      "type": "string",
+      "minLength": 1
+    },
+    "origem": {
+      "type": "object",
+      "required": [
+        "arquivo_relativo",
+        "registro_id"
+      ],
+      "properties": {
+        "arquivo_relativo": {
+          "type": "string"
+        },
+        "registro_id": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "metadados": {
+      "type": "object",
+      "required": [
+        "cliente_referencia",
+        "versao_referencia",
+        "estado_revisao",
+        "permissao_de_acesso_requerida",
+        "apto_recomendacao_automatica",
+        "indexacao"
+      ],
+      "properties": {
+        "cliente_referencia": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "versao_referencia": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "estado_revisao": {
+          "type": "string"
+        },
+        "permissao_de_acesso_requerida": {
+          "const": true
+        },
+        "apto_recomendacao_automatica": {
+          "const": false
+        },
+        "indexacao": {
+          "const": "nao_executada"
+        },
+        "disponivel_pesquisa": {
+          "type": "boolean"
+        },
+        "uso_na_recomendacao": {
+          "type": "string"
+        },
+        "finalidade": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "dados": {
+      "type": "object"
+    },
+    "conteudo_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

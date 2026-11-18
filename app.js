@@ -1,5 +1,5 @@
-// Endereço do back-end Flask (python run.py → porta 5000)
-const API_URL = location.port === "5000" ? location.origin : "http://localhost:5000";
+// As páginas e a API são servidas pela mesma aplicação Flask.
+const API_URL = location.protocol === "file:" ? "http://localhost:5000" : location.origin;
 
 const $ = (s, r = document) => r.querySelector(s);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -196,7 +196,7 @@ function initApp() {
       title: "Equipes",
       async render() {
         const teams = await loadTeams(true);
-        if (!teams.length) return `<p class="empty">Nenhuma equipe criada. Use o botão + para criar a primeira.</p>`;
+        if (!teams.length) return `<p class="empty">Nenhuma equipe criada.</p>`;
         return table(["Nome", "Criada em", ""], teams.map((t) =>
           `<tr><td>${esc(t.name)}</td><td>${fmtDate(t.created_at)}</td>
            <td class="row-actions"><button class="mini" data-act="edit-team" data-id="${esc(t.id)}">Renomear</button>
@@ -282,70 +282,43 @@ function initApp() {
   filter.addEventListener("input", applyFilter);
   statusFilter.addEventListener("change", () => openView("tickets"));
 
-  /* ---------- Sugestões: POST /suggestions ---------- */
-  let lastQuery = "";
-  $("#ask-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const text = q.value.trim();
-    if (!text) return q.focus();
-    lastQuery = text;
-    closeView();
-    results.hidden = false;
-    setHomeLayout();
-    results.innerHTML = `<p class="loading">Procurando soluções em tickets resolvidos…</p>`;
-    try {
-      renderResults(await api("/suggestions", { method: "POST", body: { query: text } }));
-    } catch (ex) {
-      results.innerHTML = `<p class="error">${esc(ex.message)}</p>`;
-    }
-  });
-
-  function renderResults({ query_id, results: items }) {
-    if (!items.length) {
-      results.innerHTML = `<div class="empty">
-        <p>Nenhuma solução parecida na base de conhecimento.</p>
-        <button class="ghost" type="button" data-new="ticket" data-prefill>Registrar como novo ticket</button></div>`;
-      return;
-    }
-    results.innerHTML = `<p class="results-head">${items.length} solução(ões) de tickets resolvidos com êxito</p>` + items.map((r) => `
-      <article class="card" data-qid="${esc(query_id)}" data-tid="${esc(r.ticket_id)}">
-        <header><h3>${esc(r.title)}</h3><span class="score">${Math.round(r.score * 100)}% de correspondência</span></header>
-        <p class="meta">${[r.category, r.product, r.resolved_at && `resolvido em ${fmtDate(r.resolved_at)}`].filter(Boolean).map(esc).join(" · ") || "&nbsp;"}</p>
-        <div class="resolution">${esc(r.resolution)}</div>
-        <footer>
-          <span class="hint">Essa solução ajudou?</span>
-          <button class="chip" type="button" data-fb="1">Ajudou</button>
-          <button class="chip" type="button" data-fb="0">Não ajudou</button>
-          <button class="link" type="button" data-ticket="${esc(r.ticket_id)}">Ver ticket</button>
-        </footer>
-      </article>`).join("");
+  /* ---------- Pesquisa principal no acervo local ---------- */
+  function resizeQuery() {
+    q.style.height = "auto";
+    q.style.height = `${Math.min(q.scrollHeight, 200)}px`;
   }
-
-  results.addEventListener("click", async (e) => {
-    const fb = e.target.closest("[data-fb]");
-    if (!fb) return;
-    const card = fb.closest(".card");
-    const helpful = fb.dataset.fb === "1";
-    try {
-      await api(`/suggestions/${encodeURIComponent(card.dataset.qid)}/feedback`, { method: "POST", body: { ticket_id: card.dataset.tid, helpful } });
-      card.querySelectorAll("[data-fb]").forEach((b) => b.classList.toggle("on", b === fb));
-      toast("Obrigado pelo retorno!");
-    } catch (ex) { toast(ex.message, true); }
+  q.addEventListener("input", resizeQuery);
+  window.addEventListener("resize", resizeQuery);
+  q.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
+      event.preventDefault();
+      $("#ask-form").requestSubmit();
+    }
+  });
+  resizeQuery();
+  let lastQuery = "";
+  initKnowledgeSearch({
+    form: $("#ask-form"), input: q, results, submit: $("#send"),
+    beforeSearch(query) {
+      lastQuery = query;
+      closeView();
+      closeNav();
+      results.hidden = false;
+      setHomeLayout();
+    },
+    onReset() {
+      results.hidden = true;
+      lastQuery = "";
+      setHomeLayout();
+    },
   });
 
-  /* ---------- Menu "+" e atalhos ---------- */
-  const menu = $("#menu"), plus = $("#plus");
-  const setMenu = (open) => { menu.hidden = !open; plus.setAttribute("aria-expanded", open); };
-  plus.onclick = (e) => { e.stopPropagation(); setMenu(menu.hidden); };
-  document.addEventListener("click", () => setMenu(false));
-  document.addEventListener("keydown", (e) => e.key === "Escape" && setMenu(false));
-
+  /* ---------- Atalhos ---------- */
   document.querySelectorAll("[data-close]").forEach((b) => (b.onclick = () => b.closest("dialog").close()));
 
   document.addEventListener("click", (e) => {
     const nb = e.target.closest("[data-new]");
     if (nb) {
-      setMenu(false);
       closeNav();
       return openNew(nb.dataset.new, nb.hasAttribute("data-prefill"));
     }

@@ -7,7 +7,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from api.config import DEFAULT_SECRET_KEY, Config
 
 FRONTEND_DIR = Path(__file__).resolve().parent.parent
-FRONTEND_FILES = {"index.html", "app.html", "app.js", "style.css"}
+FRONTEND_FILES = {"index.html", "app.html", "app.js", "style.css", "acervo.html", "acervo.js", "acervo.css"}
 
 
 def create_app() -> Flask:
@@ -28,6 +28,7 @@ def create_app() -> Flask:
     from api.routes.teams import teams_bp
     from api.routes.tickets import tickets_bp
     from api.routes.users import users_bp
+    from api.routes.knowledge import knowledge_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(users_bp)
@@ -35,6 +36,7 @@ def create_app() -> Flask:
     app.register_blueprint(tickets_bp)
     app.register_blueprint(suggestions_bp)
     app.register_blueprint(audit_bp)
+    app.register_blueprint(knowledge_bp)
 
     @app.errorhandler(413)
     def too_large(_):

@@ -1,0 +1,85 @@
+﻿.knowledge-top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 28px;border-bottom:1px solid var(--line)}
+.knowledge-top a{color:var(--muted);text-decoration:none}.knowledge-top a:hover{color:var(--text)}
+.knowledge-main{max-width:816px;min-height:calc(100vh - 78px);margin:0 auto;padding:60px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.knowledge-main h1{font-size:28px;font-weight:500;margin:0 0 12px;text-align:center}
+.knowledge-intro{color:var(--muted);text-align:center;margin:0 0 28px}
+.knowledge-visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+
+/* Conversation: user bubbles and plain assistant text. */
+.knowledge-conversation{width:100%;max-width:768px;display:flex;flex-direction:column;gap:32px;margin:12px 0 20px}
+.knowledge-conversation:empty{display:none}
+.knowledge-message{min-width:0;overflow-wrap:anywhere;scroll-margin-top:80px;scroll-margin-bottom:210px}
+.knowledge-message.user{align-self:flex-end;max-width:85%;padding:12px 20px;border-radius:24px;background:var(--surface)}
+.knowledge-message.assistant{width:100%;padding:0 2px;font-size:16px;line-height:1.8}
+.knowledge-message p{white-space:pre-wrap;margin:0}
+.knowledge-message p+p{margin-top:18px}
+.knowledge-answer-text{white-space:pre-wrap;line-height:1.8}
+.knowledge-thinking{color:var(--muted);padding:8px 0;text-align:left}
+.knowledge-status{color:var(--muted);font-size:13px;line-height:1.6;margin:8px 0}
+
+/* Options read like a short numbered reply, with the whole row clickable. */
+.knowledge-options{list-style:none;display:grid;gap:4px;margin:16px 0 8px;padding:0}
+.knowledge-options button{display:flex;align-items:baseline;gap:12px;width:100%;border:0;border-radius:10px;background:transparent;padding:9px 12px;text-align:left;line-height:1.6;overflow-wrap:anywhere}
+.knowledge-options button:hover{background:var(--surface)}
+.knowledge-option-number{flex:none;min-width:16px;color:var(--muted);font-size:14px}
+.knowledge-options button:disabled,.knowledge-other:disabled{opacity:.5;cursor:wait}
+.knowledge-other{background:none;border:0;padding:8px 12px;color:var(--muted);font-size:14px;text-align:left}
+.knowledge-other:hover{color:var(--text);text-decoration:underline}
+.knowledge-retry{margin-top:14px;font-size:13px}
+
+/* Tickets and supporting evidence stay closed until explicitly requested. */
+.knowledge-results{width:100%;max-width:768px;margin:0 0 20px}
+.knowledge-results:empty{display:none}
+.knowledge-used-sources{margin:4px 0 12px}
+.knowledge-used-sources>p{font-size:12px;color:var(--muted);margin:0 0 8px}
+.knowledge-used-sources>div{display:flex;flex-wrap:wrap;gap:8px}
+.knowledge-source{background:var(--surface-2);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:6px 11px;font-size:12px;max-width:100%;overflow-wrap:anywhere;text-align:left}
+.knowledge-source:hover{background:var(--surface);border-color:var(--muted)}
+.knowledge-ticket-details{margin:4px 0 16px}
+.knowledge-ticket-details>summary{list-style:none;display:flex;align-items:center;gap:9px;width:fit-content;max-width:100%;padding:9px 0;color:var(--muted);cursor:pointer;font-size:13px}
+.knowledge-ticket-details>summary::-webkit-details-marker{display:none}
+.knowledge-ticket-details>summary:hover{color:var(--text)}
+.knowledge-ticket-details>summary svg{width:14px;height:14px;flex:none;transition:transform .15s}
+.knowledge-ticket-details[open]>summary svg{transform:rotate(90deg)}
+.knowledge-ticket-count{padding:0 7px;border:1px solid var(--line);border-radius:6px;font-size:11px}
+.knowledge-ticket-content{display:grid;gap:14px;margin-top:12px}
+.knowledge-ticket-details:not([open])>.knowledge-ticket-content{display:none}
+.knowledge-card{padding:20px;border:1px solid var(--line);border-radius:14px;background:var(--surface-2);overflow-wrap:anywhere}
+.knowledge-card h2{font-size:16px;font-weight:500;line-height:1.5;margin:0 0 10px}
+.knowledge-policy{font-size:13px;color:var(--muted);line-height:1.6}
+.knowledge-reference{font-size:12px;color:var(--muted);line-height:1.6;overflow-wrap:anywhere}
+.knowledge-results pre,#knowledge-document pre{white-space:pre-wrap;overflow-wrap:anywhere;font-family:inherit;font-size:14px;line-height:1.7;background:var(--surface);border-radius:10px;padding:16px}
+.knowledge-evidence{padding:0 4px 12px;border-bottom:1px solid var(--line)}
+.knowledge-evidence h3{font-size:14px;font-weight:500;margin:8px 0}
+.knowledge-evidence blockquote{margin:14px 0 8px;padding-left:14px;border-left:2px solid var(--line);white-space:pre-wrap;font-size:14px;color:var(--muted)}
+.knowledge-usage,.knowledge-diagnostics{font-size:12px;color:var(--muted)}
+.knowledge-diagnostics summary{cursor:pointer}
+.knowledge-local-answer{font-size:14px;color:var(--muted);margin-bottom:16px}
+
+/* A compact composer at the bottom once a conversation starts. */
+.knowledge-composer{width:100%;max-width:768px}
+.knowledge-form{display:flex;align-items:flex-end;gap:8px;margin:0;padding:12px;background:var(--surface);border-radius:26px}
+.knowledge-form textarea{flex:1;min-width:0;resize:vertical;max-height:200px;min-height:48px;padding:4px 8px;background:none;border:0;color:var(--text);font:inherit;line-height:1.6}
+.knowledge-form textarea:focus{outline:none}
+.knowledge-form .send{flex:none}
+.knowledge-home-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:8px 0 0}
+.knowledge-home-actions .ghost{color:var(--muted);font-size:12px;border:0;padding:5px 10px}
+.knowledge-home-actions .ghost:hover{color:var(--text)}
+.knowledge-disclosure{color:var(--muted);font-size:11px;line-height:1.5;text-align:center;margin:6px 4px 0}
+.stage.has-conversation:not(.has-panel),.knowledge-main.has-conversation{justify-content:flex-start;padding-top:80px;padding-bottom:210px}
+.stage.has-conversation:not(.has-panel)>h1,.knowledge-main.has-conversation>h1,.knowledge-main.has-conversation>.knowledge-intro{display:none}
+.stage.has-conversation:not(.has-panel) .knowledge-composer,.knowledge-main.has-conversation .knowledge-composer{position:fixed;bottom:0;z-index:6;padding:22px 0 12px;background:linear-gradient(to bottom,transparent,var(--bg) 18px)}
+.stage.has-conversation:not(.has-panel) .knowledge-composer{left:calc(50% + 140px);transform:translateX(-50%);width:min(768px,calc(100% - 328px))}
+.knowledge-main.has-conversation .knowledge-composer{left:50%;transform:translateX(-50%);width:min(768px,calc(100% - 48px))}
+.home-knowledge-error{width:100%;max-width:768px;margin:10px 0}
+.home-knowledge-error:empty,#knowledge-error:empty{display:none}
+.stage.has-panel .home-knowledge-error,.stage.has-panel .knowledge-conversation,.stage.has-panel .knowledge-disclosure,.stage.has-panel .knowledge-home-actions{display:none}
+.send:disabled{opacity:.6;cursor:wait}
+
+#knowledge-document{width:min(900px,calc(100vw - 32px));max-height:85vh;overflow:auto;padding:24px;border:1px solid var(--line);border-radius:16px}
+#knowledge-document::backdrop{background:#000a}
+.knowledge-document-head{display:flex;gap:20px;align-items:flex-start;justify-content:space-between}
+.knowledge-document-head h2{font-size:20px;margin:0;overflow-wrap:anywhere}
+@media(max-width:800px){.stage.has-conversation:not(.has-panel) .knowledge-composer{left:50%;width:calc(100% - 32px)}}
+@media(max-width:600px){.knowledge-main{padding:32px 16px}.knowledge-top{padding:14px;font-size:13px;gap:8px}.knowledge-conversation{gap:26px}.knowledge-message.assistant{font-size:15px}.knowledge-message.user{max-width:92%;padding:10px 16px}.knowledge-card{padding:14px}.knowledge-main.has-conversation .knowledge-composer{width:calc(100% - 32px)}.knowledge-options button{padding:8px}.knowledge-disclosure{font-size:10px}.stage.has-conversation:not(.has-panel),.knowledge-main.has-conversation{padding-bottom:220px}}
+@media(prefers-reduced-motion:reduce){.knowledge-ticket-details>summary svg{transition:none}}

@@ -51,6 +51,10 @@ button { cursor: pointer; }
 .bar { display: flex; align-items: center; gap: 8px; background: var(--surface); border-radius: 999px; padding: 8px 8px 8px 10px; }
 .bar input { flex: 1; min-width: 0; background: none; border: 0; outline: none; padding: 8px 4px; }
 .bar input::placeholder { color: var(--muted); }
+#ask-form { align-items: flex-end; border-radius: 28px; }
+#ask-form .icon, #ask-form .send { flex-shrink: 0; }
+#q { flex: 1; min-width: 0; height: 40px; min-height: 40px; max-height: 200px; box-sizing: border-box; resize: none; overflow-y: auto; overflow-wrap: anywhere; background: none; border: 0; outline: none; padding: 8px 4px; line-height: 24px; }
+#q::placeholder { color: var(--muted); }
 .icon { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: none; border: 0; }
 .icon:hover { background: #2f2f2f; }
 .send { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--blue); }

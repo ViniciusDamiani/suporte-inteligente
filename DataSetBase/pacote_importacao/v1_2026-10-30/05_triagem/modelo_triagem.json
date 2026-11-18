@@ -1,0 +1,761 @@
+{
+  "schema_versao": "0.6",
+  "cenario_id": "TRIAGEM_MISTURA_DESTINO_001",
+  "titulo": "Mistura segue ao silo da produção anterior durante sobreposição",
+  "estado_modelagem": "rascunho_para_revisao",
+  "estado_sessao": "analise_historica_documentada_com_complemento_relacionado",
+  "diagnostico": "causa_documentada_no_atendimento_sem_reanalise_dos_logs_originais",
+  "apto_recomendacao_automatica": false,
+  "origem_relato": "Usuário nesta conversa; respostas ainda não verificadas em arquivos do incidente",
+  "observacoes": [
+    {
+      "id": "O01",
+      "atributo": "destino_fisico_produto_atual",
+      "valor": "silo_anterior",
+      "estado": "relatado"
+    },
+    {
+      "id": "O02",
+      "atributo": "destino_unit_transporte",
+      "valor": "correto_para_producao_atual",
+      "estado": "relatado"
+    },
+    {
+      "id": "O03",
+      "atributo": "rota_ativa_supervisorio",
+      "valor": "silo_anterior",
+      "estado": "relatado"
+    },
+    {
+      "id": "O04",
+      "atributo": "rota_anterior",
+      "valor": "permaneceu_ligada",
+      "estado": "relatado"
+    },
+    {
+      "id": "O05",
+      "atributo": "produto_anterior",
+      "valor": "ainda_na_linha",
+      "estado": "relatado"
+    },
+    {
+      "id": "O06",
+      "atributo": "origem_novo_destino",
+      "valor": "nova_producao_agendada_para_outro_silo",
+      "estado": "relatado"
+    },
+    {
+      "id": "O07",
+      "atributo": "alarme",
+      "valor": "intertravamento",
+      "estado": "relatado"
+    },
+    {
+      "id": "O08",
+      "atributo": "detalhes_alarme",
+      "valor": null,
+      "estado": "desconhecido",
+      "motivo": "Usuário não sabe informar texto, código, equipamento e horário"
+    },
+    {
+      "id": "O09",
+      "atributo": "cliente",
+      "valor": "C007 COOPRATA - FABRICA DE RAÇÕES",
+      "estado": "confirmado_pelo_usuario"
+    },
+    {
+      "id": "O10",
+      "atributo": "ocorrencia_identificada",
+      "valor": "ticket_14729_2024-09-18_aproximadamente_06h11",
+      "estado": "confirmado_pelo_usuario"
+    }
+  ],
+  "contexto_pendente": [
+    "texto_codigo_horario_exatos_do_alarme_inicial",
+    "rota_esperada_para_SE10",
+    "revisao_efetivamente_implantada_no_atendimento_14729",
+    "acesso_aos_logs_originais_para_auditoria_independente"
+  ],
+  "hipoteses": [
+    {
+      "id": "H01",
+      "descricao": "Encerramento ou troca da rota anterior não concluído na passagem entre produções",
+      "estado": "candidata",
+      "requer": [
+        "E01",
+        "E02",
+        "E05"
+      ]
+    },
+    {
+      "id": "H02",
+      "descricao": "Rota anterior acionada novamente durante a transição, sem interrupção percebida pelo usuário",
+      "estado": "documentada_na_analise_historica",
+      "requer": [
+        "E02",
+        "E03",
+        "E05"
+      ],
+      "limite": "Reacionamento consta no atendimento; relato de continuidade preservado. Logs originais não reabertos."
+    },
+    {
+      "id": "H03",
+      "descricao": "Rota ou comandos escolhidos não correspondem ao destino esperado",
+      "estado": "candidata",
+      "requer": [
+        "E02",
+        "E03",
+        "E06"
+      ]
+    },
+    {
+      "id": "H04",
+      "descricao": "Comando esperado gerado, com falha, descarte, substituição ou divergência de retorno",
+      "estado": "candidata",
+      "requer": [
+        "E03",
+        "E04",
+        "E07"
+      ]
+    }
+  ],
+  "solicitacoes_evidencia": [
+    {
+      "id": "E01",
+      "titulo": "Histórico de alarmes",
+      "fonte": "Histórico de alarmes anexado pelo usuário",
+      "extrair": [
+        "texto_completo",
+        "codigo",
+        "unit_rota_equipamento",
+        "inicio_fim_disponiveis"
+      ],
+      "finalidade": "Identificar o bloqueio e correlacioná-lo com a transição",
+      "estado": "nao_coletado_em_arquivo_original",
+      "origem_orientativa_coleta": "Exportação ou captura do sistema",
+      "mensagem_solicitacao": "Anexe a exportação ou uma captura do histórico de alarmes do período, incluindo texto, código e horários disponíveis.",
+      "modo_obtencao": "anexo_usuario",
+      "acesso_direto_ao_ambiente_cliente": false,
+      "anexos_recebidos": [],
+      "quando_ja_anexado": "Interpretar o arquivo recebido e pedir apenas complementos ausentes ou incompatíveis com a ocorrência"
+    },
+    {
+      "id": "E02",
+      "titulo": "Escolha e transição de rota",
+      "fonte": "Arquivos de eventos de transporte anexados pelo usuário",
+      "buscar_conforme_versao": [
+        "TEST INTERLOCK ROAD",
+        "VERIFY TEST ROAD",
+        "TRANSPORT ROAD",
+        "START STOPPING",
+        "TRANSPORT STATUS",
+        "TRANSPORT UNIT:",
+        "STOP NORMAL TRANSPORT",
+        "STOPPED",
+        "ERASE ROAD",
+        "NOT pubStartNormalTransport"
+      ],
+      "finalidade": "Distinguir rota mantida, encerrada, reiniciada e nova rota testada ou iniciada",
+      "limites": "Linha de teste não prova aprovação; a ausência de arquivo não prova ausência de evento",
+      "estado": "nao_coletado_em_arquivo_original",
+      "complemento_especifico": "Log_Interlok*: procurar TESTE DE INTERTRAVAMENTO DA ROTA e ERRO; pode indicar rota sem detalhar equipamentos. Para a versão histórica, priorizar também Analysis citado no ticket.",
+      "origem_orientativa_coleta": "C:\\Gemba\\LOG\\DataManager\\Transport",
+      "mensagem_solicitacao": "Anexe os arquivos de transporte do período da transição, incluindo Log_Interlok quando disponível; para a versão histórica, inclua Analysis se pertinente.",
+      "modo_obtencao": "anexo_usuario",
+      "acesso_direto_ao_ambiente_cliente": false,
+      "anexos_recebidos": [],
+      "quando_ja_anexado": "Interpretar o arquivo recebido e pedir apenas complementos ausentes ou incompatíveis com a ocorrência"
+    },
+    {
+      "id": "E03",
+      "titulo": "Escritas por equipamento",
+      "fonte": "Arquivos PLCWrite anexados pelo usuário",
+      "extrair": [
+        "horario",
+        "plc",
+        "equipamento",
+        "endereco_tag",
+        "valores",
+        "rota_quando_disponivel",
+        "producao_batelada_quando_disponiveis",
+        "sequencia_escritas"
+      ],
+      "finalidade": "Comparar comandos para os destinos anterior e esperado, incluindo eventual substituição",
+      "limites": "Comandos dependem de cadastro/protocolo/etapa; registro não comprova ação física",
+      "estado": "nao_coletado_em_arquivo_original",
+      "origem_orientativa_coleta": "C:\\Gemba\\LOG\\DataManager\\PLCWrite",
+      "mensagem_solicitacao": "Anexe os arquivos PLCWrite que cubram a transição entre as duas produções.",
+      "modo_obtencao": "anexo_usuario",
+      "acesso_direto_ao_ambiente_cliente": false,
+      "anexos_recebidos": [],
+      "quando_ja_anexado": "Interpretar o arquivo recebido e pedir apenas complementos ausentes ou incompatíveis com a ocorrência"
+    },
+    {
+      "id": "E04",
+      "titulo": "Resultado de escrita",
+      "fonte": "Arquivos Write anexados pelo usuário",
+      "buscar_conforme_versao": [
+        "Escrita OK",
+        "Escrita com problemas",
+        "Write Skiped"
+      ],
+      "finalidade": "Correlacionar resultado com item/endereço e período do comando",
+      "limites": "No ramo OPC Word examinado, Valor é código de retorno; Write Skiped não comprova escrita",
+      "estado": "nao_coletado_em_arquivo_original",
+      "origem_orientativa_coleta": "C:\\Gemba\\LOG\\DataManager\\Write",
+      "mensagem_solicitacao": "Anexe os arquivos Write correspondentes ao período e aos itens de escrita que estamos investigando.",
+      "modo_obtencao": "anexo_usuario",
+      "acesso_direto_ao_ambiente_cliente": false,
+      "anexos_recebidos": [],
+      "quando_ja_anexado": "Interpretar o arquivo recebido e pedir apenas complementos ausentes ou incompatíveis com a ocorrência"
+    },
+    {
+      "id": "E05",
+      "titulo": "Ocupação e encerramento das Units",
+      "fonte": "Registros de Unit e produção anexados pelo usuário",
+      "extrair": [
+        "unit_real",
+        "producao",
+        "batelada",
+        "ocupacao",
+        "encerramento",
+        "destino_no_periodo"
+      ],
+      "finalidade": "Alinhar a sobreposição com as decisões de rota",
+      "limites": "Uma mensagem Apagou a Unit de transporte imprime produção nessa posição no código de referência; não tratá-la como identificador da Unit",
+      "estado": "nao_coletado_em_arquivo_original",
+      "origem_orientativa_coleta": "Registros de produção/batelada/Unit e arquivos Log REG* e Log_Unit* em C:\\Gemba\\LOG\\DataManager",
+      "mensagem_solicitacao": "Anexe a exportação dos registros de ocupação/encerramento das Units e os arquivos Log REG e Log_Unit disponíveis no período.",
+      "modo_obtencao": "anexo_usuario",
+      "acesso_direto_ao_ambiente_cliente": false,
+      "anexos_recebidos": [],
+      "quando_ja_anexado": "Interpretar o arquivo recebido e pedir apenas complementos ausentes ou incompatíveis com a ocorrência"
+    },
+    {
+      "id": "E06",
+      "titulo": "Configuração de origem, rota e destino",
+      "fonte": "Configuração exportada e anexada pelo usuário",
+      "finalidade": "Conferir a relação Unit/origem/silo/rota/equipamento e a aplicabilidade da regra",
+      "quando_solicitar": "Se registros de seleção e escrita indicarem associação incompatível ou não permitirem decodificar o comando",
+      "estado": "nao_coletado_em_arquivo_original",
+      "origem_orientativa_coleta": "Cadastro/exportação da instalação no contexto da ocorrência",
+      "mensagem_solicitacao": "Anexe a exportação ou captura da configuração da Unit, origem, rotas, silos e equipamentos identificados na investigação.",
+      "modo_obtencao": "anexo_usuario",
+      "acesso_direto_ao_ambiente_cliente": false,
+      "anexos_recebidos": [],
+      "quando_ja_anexado": "Interpretar o arquivo recebido e pedir apenas complementos ausentes ou incompatíveis com a ocorrência"
+    },
+    {
+      "id": "E07",
+      "titulo": "Retorno do equipamento",
+      "fonte": "Diagnóstico ou registros de retorno anexados pelo usuário",
+      "finalidade": "Comparar comando e estado/posição retornada",
+      "quando_solicitar": "Se comandos pertinentes estiverem identificados e a divergência de execução permanecer",
+      "limites": "PLCRead não cobre universalmente todos os sinais",
+      "estado": "nao_coletado_em_arquivo_original",
+      "origem_orientativa_coleta": "Diagnóstico ou registros com cobertura e interpretação comprovadas para o equipamento",
+      "mensagem_solicitacao": "Anexe o diagnóstico ou os registros de retorno dos equipamentos identificados, no período dos comandos analisados.",
+      "modo_obtencao": "anexo_usuario",
+      "acesso_direto_ao_ambiente_cliente": false,
+      "anexos_recebidos": [],
+      "quando_ja_anexado": "Interpretar o arquivo recebido e pedir apenas complementos ausentes ou incompatíveis com a ocorrência"
+    },
+    {
+      "id": "E08",
+      "titulo": "Exportacao de dados pertinentes da ocorrencia",
+      "fonte": "Exportacoes anexadas pelo usuario, identificadas por ocorrencia e periodo",
+      "modo_obtencao": "anexo_usuario",
+      "acesso_direto_ao_ambiente_cliente": false,
+      "anexos_recebidos": [],
+      "mensagem_solicitacao": "Quando necessario, anexe exportacoes dos registros de producao/batelada, Unit e configuracao das rotas/equipamentos identificados; informe data do snapshot e versao da instalacao.",
+      "finalidade": "Associar os valores do caso aos campos e relacionamentos documentados",
+      "limites": "Nao inferir estado historico por uma tabela de estado atual; fonte de estrutura de outro cliente/versao requer validacao",
+      "quando_solicitar": "Quando os anexos de logs nao permitirem resolver o cadastro, o vinculo ou o estado pertinente",
+      "estado": "nao_recebido_para_a_ocorrencia_2024"
+    }
+  ],
+  "politica_coleta": {
+    "periodo": "Cobrir a passagem da última batelada anterior à primeira atual afetada, incluindo ocupação e parada/troca; refinar o intervalo pelos eventos encontrados",
+    "prioridade_inicial": [
+      "E01",
+      "E02",
+      "E05"
+    ],
+    "sequencia_complementar": [
+      "E03",
+      "E04",
+      "E06",
+      "E07"
+    ],
+    "arquivo_indisponivel": "Registrar a lacuna e solicitar um anexo alternativo pertinente; manter interpretação inconclusiva",
+    "analysis": "Solicitar ao usuário os arquivos Analysis pertinentes quando necessários; o caminho serve apenas de orientação de coleta",
+    "conflitos": "Manter relato e evidência separados e solicitar esclarecimento",
+    "reproducao_em_producao": "Não é uma etapa prescrita por este piloto",
+    "reuso_contexto": "Recuperar dados já identificados no ticket confirmado e perguntar apenas pelas lacunas. Solicitar arquivos históricos somente para auditoria independente ou detalhamento ausente.",
+    "modo_obtencao_evidencias_ocorrencia": "anexos_enviados_pelo_usuario",
+    "acessar_caminho_no_ambiente_cliente": false,
+    "significado_caminhos": "Somente caminhos padrão definidos no código do produto, como C:\\Gemba\\LOG\\DataManager, podem ser guardados como orientação; não persistir caminhos locais ou de rede específicos do ambiente",
+    "reutilizar_anexos": "Verificar primeiro os arquivos já anexados à ocorrência; solicitar somente o complemento necessário",
+    "recebimento": "Vincular o anexo à ocorrência, verificar conteúdo, período e identificadores, extrair evidências com referência ao arquivo/trecho e continuar a triagem",
+    "distincao_base_conhecimento": "Tickets, artigos e regras já preparados compõem a base consultada pela RAG; os anexos são evidências da ocorrência em análise"
+  },
+  "etapas": [
+    {
+      "id": "T01",
+      "tipo": "identificar_contexto",
+      "proxima": "T02"
+    },
+    {
+      "id": "T02",
+      "tipo": "solicitar_anexos_ausentes",
+      "pedidos": [
+        "E01",
+        "E02",
+        "E05"
+      ],
+      "respostas": [
+        {
+          "valor": "disponiveis",
+          "proxima": "T03"
+        },
+        {
+          "valor": "parciais",
+          "proxima": "T03"
+        },
+        {
+          "valor": "indisponiveis",
+          "proxima": "T08"
+        }
+      ],
+      "modo_obtencao": "anexo_usuario"
+    },
+    {
+      "id": "T03",
+      "tipo": "interpretar_e_correlacionar_anexos_recebidos",
+      "respostas": [
+        {
+          "valor": "identificadores_ou_periodo_insuficientes",
+          "proxima": "T08"
+        },
+        {
+          "valor": "correlacao_possivel",
+          "proxima": "T04"
+        },
+        {
+          "valor": "contradicao",
+          "proxima": "T08"
+        }
+      ]
+    },
+    {
+      "id": "T04",
+      "tipo": "interpretar_transicao",
+      "respostas": [
+        {
+          "valor": "rota_anterior_sem_encerramento_comprovado",
+          "proxima": "T05"
+        },
+        {
+          "valor": "reacionamento_anterior_documentado",
+          "proxima": "T05"
+        },
+        {
+          "valor": "nova_rota_testada_ou_iniciada",
+          "proxima": "T05"
+        },
+        {
+          "valor": "sequencia_ainda_indeterminada",
+          "proxima": "T08"
+        }
+      ]
+    },
+    {
+      "id": "T05",
+      "tipo": "complementar_comandos_configuracao_retorno",
+      "pedidos_condicionais": [
+        "E03",
+        "E04",
+        "E06",
+        "E07",
+        "E08"
+      ],
+      "proxima": "T06",
+      "modo_obtencao": "anexo_usuario_quando_necessario"
+    },
+    {
+      "id": "T06",
+      "tipo": "avaliar_fundamentacao_e_aplicabilidade",
+      "respostas": [
+        {
+          "valor": "acao_especifica_fundamentada",
+          "proxima": "T07"
+        },
+        {
+          "valor": "lacuna_ou_causa_nao_catalogada",
+          "proxima": "T08"
+        }
+      ]
+    },
+    {
+      "id": "T07",
+      "tipo": "orientar_e_verificar_resultado",
+      "acao_preenchida": false,
+      "resultado_preenchido": false,
+      "estado": "nao_alcancado"
+    },
+    {
+      "id": "T08",
+      "tipo": "solicitar_complemento_ou_encaminhar_analise",
+      "regra": "Especificar a lacuna e solicitar o anexo ou informação complementar; não acessar caminhos do cliente nem repetir pedidos já atendidos",
+      "estado": "pendencias_remanescentes_identificadas"
+    },
+    {
+      "id": "T09",
+      "tipo": "usar_diagnostico_historico_e_complemento",
+      "condicao": "Identidade da ocorrência confirmada pelo usuário e documentação relacionada examinada",
+      "tickets": [
+        "14729",
+        "15097"
+      ],
+      "proxima": "T06",
+      "limite": "Uma ação futura requer revisão/configuração aplicável; teste documentado e carregamento não equivalem a resultado duradouro confirmado"
+    }
+  ],
+  "referencias": [
+    {
+      "tipo": "precedente_historico",
+      "ticket": "14729",
+      "evidencia_ids": [
+        "interacao_155536",
+        "interacao_156930",
+        "interacao_157259",
+        "interacao_157455"
+      ],
+      "limite": "Reacionamento documentado no precedente; usuário relata continuidade neste cenário; mesma causa não confirmada",
+      "fonte_id": "evidencias_atendimento"
+    },
+    {
+      "tipo": "precedente_historico",
+      "ticket": "14869",
+      "evidencia_ids": [
+        "interacao_157451"
+      ],
+      "limite": "Ticket contém mais de uma ocorrência; separar sobreposição de troca manual",
+      "fonte_id": "evidencias_atendimento"
+    },
+    {
+      "tipo": "fundamentacao_verificacao",
+      "evidencia_ids": [
+        "e2e_codigo_transport",
+        "e2e_codigo_transport_status",
+        "e2e_codigo_resultado_escrita",
+        "e2e_codigo_reg",
+        "proc_plcwrite_comando_equipamento",
+        "e2e_codigo_registro_plcwrite"
+      ],
+      "versao_referencia": "2026.4.4.1.0",
+      "limite": "Não comprova versão ou configuração instalada no cenário relatado",
+      "fonte_id": "evidencias_processos"
+    },
+    {
+      "tipo": "analise_documental_ampliada",
+      "evidencia_ids": [
+        "interacao_155536",
+        "interacao_155628",
+        "interacao_156930",
+        "interacao_157259",
+        "interacao_157290",
+        "interacao_157292",
+        "interacao_157293",
+        "interacao_157455",
+        "interacao_157498",
+        "interacao_157774",
+        "interacao_158524",
+        "artigo_614_trecho_1",
+        "artigo_614_trecho_2",
+        "artigo_614_trecho_3",
+        "artigo_614_trecho_4",
+        "interacao_160040",
+        "interacao_160152",
+        "interacao_160154",
+        "interacao_160161",
+        "interacao_160616",
+        "interacao_160617",
+        "interacao_160618",
+        "interacao_161244"
+      ],
+      "limite": "Distinguir #14729, complemento #15097 e outras ocorrências consolidadas no artigo 614",
+      "fonte_id": "evidencias_atendimento"
+    },
+    {
+      "tipo": "estrutura_banco_de_referencia",
+      "fonte_id": "esquema_agpr5_referencia_2026_10_30",
+      "objetos": [
+        "dbo.Units",
+        "dbo.TRA_Road",
+        "dbo.TRA_Source",
+        "dbo.TRA_Road_Destination_Silo",
+        "dbo.MAN_Equipment"
+      ],
+      "limite": "Relacoes de estrutura nao comprovam valores ou sequencia do incidente; esta copia foi identificada como origem AGPR5_C389",
+      "versao_referencia": "DevGembaMillV2026.4.4.1.0",
+      "origem_associacao_versao": "informada_usuario"
+    }
+  ],
+  "criterios_recomendacao": [
+    "Evidência correlacionada à instalação, operação e período",
+    "Versão e configuração aplicáveis identificadas",
+    "Ação documentada para a condição comprovada",
+    "Limites e lacunas explicitados",
+    "Resultado da ação registrado separadamente"
+  ],
+  "historico_modelagem": [
+    {
+      "data": "2026-10-30",
+      "descricao": "Primeiro ramo modelado a partir das respostas do usuário; detalhes do alarme desconhecidos encaminham à coleta de evidências; nenhuma evidência do incidente recebida"
+    },
+    {
+      "data": "2026-10-30",
+      "descricao": "Usuário confirmou C007 e #14729; contexto recuperado do histórico; identificado complemento #15097 com testes e carregamento documentados; preservadas incertezas de implantação original, alarme e resultado posterior."
+    },
+    {
+      "data": "2026-10-30",
+      "descricao": "Usuário definiu que a aplicação sempre solicitará os arquivos da ocorrência por anexo. Caminhos mantidos apenas como orientação de coleta; reutilização dos anexos já recebidos."
+    },
+    {
+      "data": "2026-10-30",
+      "descricao": "Armazenamento possivelmente em banco, ainda em definição. Referências locais/de rede removidas do modelo ativo; preservados apenas caminhos padrão do produto, IDs de fontes e referências relativas de código."
+    },
+    {
+      "data": "2026-10-30",
+      "descricao": "Adicionado catalogo de banco de referencia e vinculos com codigo; dados de 2026 nao usados como estado do incidente C007 de 2024; evidencias operacionais continuam por anexos."
+    },
+    {
+      "data": "2026-10-30",
+      "descricao": "Usuario associou o backup/banco de referencia a DevGembaMillV2026.4.4.1.0; pendencia de identificacao nominal da versao encerrada, sem homologar comportamentos."
+    }
+  ],
+  "contexto_identificado": {
+    "ticket": "14729",
+    "cliente": "C007 COOPRATA - FABRICA DE RAÇÕES",
+    "cliente_anonimizado": "CLI_971774",
+    "data": "2024-09-18",
+    "horario_aproximado": "06:11",
+    "producao_anterior": "62134",
+    "batelada_anterior_no_transporte": "16",
+    "producao_atual": "62136",
+    "batelada_atual": "1",
+    "units": [
+      "8",
+      "9"
+    ],
+    "silo_anterior": "SEN05",
+    "silo_esperado": "SE10",
+    "rota_anterior_documentada": "326",
+    "silo_interno_anterior_documentado": "57",
+    "rota_esperada_SE10": null,
+    "origem": "Usuário confirmou a identidade da ocorrência; demais dados recuperados do ticket/artigo"
+  },
+  "associacao_historica": {
+    "ticket_principal": "14729",
+    "vinculo": "confirmado_pelo_usuario",
+    "problema": "Nova produção com destino SE10 direcionada fisicamente ao SEN05 da produção anterior durante sobreposição",
+    "causa_documentada": "Verificação de rotas podia acionar a rota da produção anterior durante o encerramento/limpeza da Unit",
+    "correcao_original": {
+      "ticket": "14729",
+      "acao": "Restringir verificação de disponibilidade a cd_road = 0, excluindo o estado -1 de encerramento",
+      "origem_versao_declarada": "DevGembaMillV4.3.6.0",
+      "versao_corrigida_declarada": "DevGembaMillV4.4.0.1",
+      "revisao_declarada_interacao_157290": "631",
+      "evidencias": [
+        "interacao_157259",
+        "interacao_157292",
+        "interacao_157455",
+        "interacao_157290"
+      ],
+      "completude": "Complemento posterior relata ajuste faltante; não classificar como correção completa isolada",
+      "implantacao": "Há registro de carregamento com referência também a #11822; revisão exata não determinada",
+      "resultado_posterior": null
+    },
+    "complemento": {
+      "ticket": "15097",
+      "data_ocorrencia": "2024-11-04",
+      "problema": "Produção destinada à SENS03 direcionada à SENS06; ocorrência distinta na mesma instalação",
+      "acao": "Remover atualização prematura de cd_road para zero na parada normal e completar tratamento de pausa/limpeza da Unit",
+      "relacao_explicita": "interacao_160161",
+      "versao_corrigida_declarada": "DevGembaMillV4.3.9.1",
+      "teste_desenvolvimento": "Troca de ração, nível alto e silo alternativo, sem problemas identificados segundo 160616 e 160617",
+      "disponibilizacao": "interacao_160618",
+      "carregamento": "interacao_161244, 14/11/2024, com acompanhamento de produção",
+      "resultado_duradouro_pos_implantacao": null
+    },
+    "artigo": "614",
+    "limites": [
+      "Artigo consolidado contém mais de uma revisão e ocorrência; não atribuir todas as ações ao primeiro pacote",
+      "Versões corrigidas declaradas divergem entre documentos; preservar ambas com fonte e conferir revisão efetiva",
+      "Transcrições históricas de logs não substituem reabertura independente dos arquivos originais",
+      "Rota 327/silo 58 às 07h55 da produção 62134 não identificam automaticamente a rota esperada para SE10"
+    ]
+  },
+  "confronto_fontes": [
+    {
+      "tema": "continuidade_versus_reacionamento",
+      "relato": "Permaneceu ligada",
+      "documentacao": "Interações 156930 e 157293 identificam novo acionamento",
+      "tratamento": "Preservar ambas as origens; usar a conclusão documental sem sobrescrever o relato"
+    },
+    {
+      "tema": "alarme",
+      "relato": "Intertravamento",
+      "documentacao": "156930 não identificou alarme relacionado inicialmente; 157293 traz bloqueios posteriores em outro contexto de rota/produção",
+      "tratamento": "Detalhes do alarme da entrada da produção 62136 continuam sem localização específica"
+    }
+  ],
+  "linha_tempo_documental": [
+    {
+      "data_hora": "2024-09-18 06:09:46.773",
+      "evento": "Encerramento da produção 62134/batelada 16 na Unit 8"
+    },
+    {
+      "data_hora": "2024-09-18 06:09:48.290",
+      "evento": "Ocupação da Unit 8 pela produção 62136/batelada 1"
+    },
+    {
+      "inicio": "2024-09-18 06:11:00",
+      "fim": "2024-09-18 06:11:01",
+      "precisao_log": "segundos",
+      "evento": "Tentativa e início da rota 326/silo 57 para produção 62134"
+    },
+    {
+      "data_hora": "2024-09-18 06:11:01.197",
+      "evento": "Encerramento da produção 62134/batelada 16 na Unit 9"
+    },
+    {
+      "data_hora": "2024-09-18 06:11:01.243",
+      "evento": "Ocupação da Unit 9 pela produção 62136/batelada 1"
+    }
+  ],
+  "limite_linha_tempo": "Fonte: interação 157293; não ordenar eventos com precisão de milissegundos a partir de linhas de log com resolução de segundos; os 46 ms entre registros da Unit 9 não medem duração da falha.",
+  "etapa_atual": "T09",
+  "proxima_verificacao": "Para aplicação atual, solicitar evidência da revisão efetiva do DataManager e conferir o conjunto de correções original/complementar. Para auditoria histórica, solicitar ao usuário os arquivos originais como anexos.",
+  "codigo_referencia_analisado": {
+    "versao": "2026.4.4.1.0",
+    "head_verificado": "7ec60bb87755d6c0302b5a4a7456c5873eb315e2",
+    "alteracoes_locais_nos_tres_arquivos": false,
+    "arquivos": [
+      {
+        "sha256": "487438269baaf11459990c6dee46db4ff78cc26ff052ee5fda62db58e967a38f",
+        "trechos": [
+          {
+            "inicio": 822,
+            "fim": 847,
+            "texto": "822:                             Case UnitTypes.ptTransportUnit 'Transporte - aqui BATCHONBATCH\n823: \n824:                                 'Verifica se ainda está em produção\n825:                                 If Not priCheckUnitEmpty(kiUnit) Then\n826: \n827:                                     'Delete scheduling last batch\n828:                                     pubDeleteSchedulingLastBatch(kiProductionNumber, iBatchNumber)\n829: \n830:                                     'Atualiza data final na tabela Production_Batch_Reg_Destination\n831:                                     priProductionBatchRegDestination(kiProductionNumber, kiBatchNumber, 0, iCodeSilo)\n832: \n833:                                 End If\n834: \n835:                                 'Marca a data final de Unit\n836:                                 priStopUnitEvent(iProductionNumber, iBatchNumber, kiUnit)\n837: \n838:                                 'Atualiza dados de produção no registro da unit\n839:                                 priUpdateNormalUnit(kiUnit, kiValue, kiPlcNumber)\n840: \n841:                                 'Start transport only when cd_road = empty or emptying (-1 or 0) .\n842:                                 'When cd_road has road, we have batch on batch, so no start new transport.\n843:                                 sSql = \" Select cd_road from Units where cd_unit = \" & kiUnit.ToString & \" and cd_road <= 0 \"\n844:                                 If eData.HasRows(sSql) Then\n845:                                     pubStartNormalTransport(kiUnit)\n846:                                 Else\n847:                                     Utilities.Log(\"Transporte de dosagem esta ocupado, Unit \" & kiUnit.ToString & \" NOT pubStartNormalTransport\", \"C:\\Gemba\\LOG\\\" & Utilities.GetApplicationName & \"\\transport\", \"Log \")"
+          },
+          {
+            "inicio": 2834,
+            "fim": 2869,
+            "texto": "2834:     Private Sub priUpdateNormalUnit(ByVal kiUnit As Integer, ByVal kiValue As Integer, ByVal kiPlcNumber As Integer)\n2835: \n2836:         Try\n2837: \n2838:             Dim eData As New DtBase(gsDataBaseFile, gsCulture)\n2839:             Dim aeUnit(2) As Object\n2840: \n2841:             'Recupera os dados da produção atual da posição informada\n2842:             Dim sSql As String\n2843:             sSql = \"Select p.nr_production, p.nr_batch, p.cd_silo From Production_Batch_Actual p, Production_reg pr, Units u  \" & _\n2844:                    \" where p.nr_production = pr.nr_production and pr.cd_unit = u.cd_unit  and u.cd_plc_number = \" & kiPlcNumber.ToString & _\n2845:                    \" and vl_position = \" & CStr(kiValue)\n2846:             aeUnit = eData.GetSelectMultiData(sSql)\n2847: \n2848:             Dim iProductionNumber As Integer = CInt(aeUnit(0))\n2849:             Dim iBatchNumber As Integer = CInt(aeUnit(1))\n2850:             Dim iCodeSilo As Integer = CInt(aeUnit(2))\n2851: \n2852:             'Recupera o produto\n2853:             sSql = \"Select f.cd_product From Production_Reg p, Formula f \" & _\n2854:                    \"Where p.cd_formula = f.cd_formula and \" & _\n2855:                    \"nr_production = \" & iProductionNumber.ToString\n2856:             Dim iCodeProduct As Integer = CInt(eData.GetSelectData(sSql))\n2857: \n2858: \n2859:             'Atualiza dados da unit\n2860:             sSql = \" Update Units Set \" & _\n2861:                    \" nr_production = \" & iProductionNumber.ToString & _\n2862:                    \",nr_batch = \" & iBatchNumber.ToString & _\n2863:                    \",cd_silo = \" & iCodeSilo.ToString & _\n2864:                    \",cd_product = \" & iCodeProduct.ToString & _\n2865:                    \" Where cd_unit = \" & kiUnit.ToString\n2866:             eData.UpdateData(sSql, True, False)\n2867: \n2868:             'Registra o evento inicial da Unit\n2869:             priStartUnitEvent(iProductionNumber, iBatchNumber, kiUnit)"
+          },
+          {
+            "inicio": 5300,
+            "fim": 5309,
+            "texto": "5300:             If pubIsTransportUnit(kiUnit) And aeBitArray(1) = True Then\n5301: \n5302:                 pubStartStopping(kiUnit, StatusTransport.ptStopping)\n5303: \n5304:                 sSql = \" Update Units Set vl_status = \" & kiValue.ToString & _\n5305:                        \" Where cd_unit = \" & kiUnit.ToString\n5306:                 eData.UpdateData(sSql, True, False)\n5307: \n5308:                 Dim sLogString As String = \"TRANSPORT: \" & StatusTransport.ptStopping & \" Unit \" & kiUnit.ToString & \" STOPPING aeBitArray(1)\"\n5309:                 Utilities.Log(sLogString, \"C:\\Gemba\\LOG\\\" & Utilities.GetApplicationName & \"\\transport\", \"Log \")"
+          }
+        ],
+        "caminho_relativo_repositorio": "DataManager/mdlDataHandlerUnit.vb"
+      },
+      {
+        "sha256": "bc3f67c81a0e47ee77ab6e7263aed360bcaa48336a673baefde01cb00d580644",
+        "trechos": [
+          {
+            "inicio": 282,
+            "fim": 308,
+            "texto": "282:     Public Sub pubStopNormalTransport(ByVal kiUnit As Integer)\n283: \n284:         Try\n285: \n286:             Dim eTransports As New Transports.Transp(gsDataBaseFile, gsCulture, 0)\n287:             Dim eData As New DtBase(gsDataBaseFile, gsCulture)\n288:             Dim sLogString As String\n289:             Dim iRoadCode As Integer\n290: \n291:             ' If unit is not configured in TRA_Source, no roads exists by the system, exit funtion.\n292:             If Not eData.HasRows(\"Select cd_source from TRA_Source where cd_unit = \" & kiUnit.ToString) Then\n293: \n294:                 sLogString = \"UNIT\" & kiUnit.ToString & \" TRANSPORT PLC \"\n295:                 Utilities.Log(sLogString, \"C:\\Gemba\\LOG\\\" & Utilities.GetApplicationName & \"\\transport\", \"Log \")\n296: \n297:                 Exit Sub\n298: \n299:             End If\n300: \n301:             iRoadCode = eData.GetSelectData(\"Select cd_road from Units where cd_unit = \" & kiUnit.ToString)\n302:             eTransports.ImediateStopTransport(CStr(iRoadCode))\n303: \n304:             pubUpdateTransportStatus(iRoadCode, StatusTransport.ptDelete)\n305: \n306:             sLogString = \"TRANSPORT UNIT: \" & kiUnit.ToString & \" STOP NORMAL TRANSPORT \"\n307:             Utilities.Log(sLogString, \"C:\\Gemba\\LOG\\\" & Utilities.GetApplicationName & \"\\transport\", \"Log \")\n308: "
+          },
+          {
+            "inicio": 402,
+            "fim": 472,
+            "texto": "402:                             If gaiStoppingTransport(CInt(sRoadCode), 1) <= 0 Then\n403: \n404:                                 'Envia os comandos para parar os equipamentos da rota\n405:                                 eTransports.ImediateStopTransport(sRoadCode)\n406: \n407:                                 'Apaga os alarmes desta Unit caso haja algum\n408:                                 Alarm.DeleteAlarm(0, 3000 + iUnit)\n409: \n410:                                 'Zera os valores da posição do transporte\n411:                                 gaiStoppingTransport(CInt(sRoadCode), 0) = 0\n412:                                 gaiStoppingTransport(CInt(sRoadCode), 1) = 0\n413: \n414:                                 sLogString = \"TRANSPORT ROAD: \" & sRoadCode & \" : Unit \" & iUnit.ToString & \" STOPPED \"\n415:                                 Utilities.Log(sLogString, \"C:\\Gemba\\LOG\\\" & Utilities.GetApplicationName & \"\\transport\", \"Log \")\n416: \n417:                                 ' High level, send confirmation, update units status (to avoid restart transport) and restart transport normally\n418:                                 If sStatus = pubGetStatus(StatusTransport.ptHighLevel) Or sStatus = pubGetStatus(StatusTransport.ptPausing) Then\n419: \n420:                                     'Envia apagar para o CLP (Change Silo)\n421:                                     pubSendCommandUnit(CStr(iUnit), Bits.BIT2, 1, \"Bit2\")\n422: \n423:                                     If sStatus = pubGetStatus(StatusTransport.ptPausing) Then\n424: \n425:                                         ' Stop and erase all equipements.\n426:                                         pubStopNormalTransport(iUnit)\n427: \n428:                                         ' pubUpdateTransportStatus(sRoadCode, StatusTransport.ptDelete)\n429: \n430:                                         'Zera rota para verificar rota da produção iniciada\n431:                                         eData.UpdateData(\"Update Units set cd_road = 0 where cd_unit = \" & iUnit.ToString, True, False)\n432: \n433:                                         sLogString = \"TRANSPORT ROAD:\" & sRoadCode & \" : Unit \" & iUnit.ToString & \" INITIATE VERIFY PAUZING\"\n434:                                         Utilities.Log(sLogString, \"C:\\Gemba\\LOG\\\" & Utilities.GetApplicationName & \"\\transport\", \"Log \")\n435: \n436:                                         'Enable timer to check new destination\n437:                                         tmrVerifyTransport.Enabled = True\n438: \n439:                                     Else\n440: \n441:                                         ' Erase road\n442:                                         eData.UpdateData(\"Update Units set cd_road = 0 where cd_unit = \" & iUnit.ToString, True, False)\n443: \n444:                                         'Envia os valores de pv e sp dos tempos dos transportes\n445:                                         pubSendTransportTime(iUnit.ToString, 0)\n446: \n447:                                         pubUpdateTransportStatus(sRoadCode, StatusTransport.ptDelete)\n448: \n449:                                         sLogString = \"TRANSPORT ROAD: \" & sRoadCode & \" : Unit \" & iUnit.ToString & \" DELETE \"\n450:                                         Utilities.Log(sLogString, \"C:\\Gemba\\LOG\\\" & Utilities.GetApplicationName & \"\\transport\", \"Log \")\n451: \n452:                                         pubStartNormalTransport(iUnit)\n453: \n454:                                         bStartNormalTransport = True\n455: \n456:                                     End If\n457: \n458:                                     ' Not high level, erase unit\n459:                                 Else\n460: \n461:                                     ' Erase road\n462:                                     eData.UpdateData(\"Update Units set cd_road = -1 where cd_unit = \" & iUnit.ToString, True, False)\n463:                                     pubUpdateTransportStatus(sRoadCode, StatusTransport.ptDelete)\n464: \n465:                                     'Envia Unit para o CLP (Apagar)\n466:                                     pubSendCommandUnit(CStr(iUnit), Bits.BIT15, 1, \"Erase\")\n467: \n468:                                     'Envia os valores de pv e sp dos tempos dos transportes\n469:                                     pubSendTransportTime(iUnit.ToString, 0)\n470: \n471:                                     sLogString = \"TRANSPORT ROAD:\" & sRoadCode & \" : Unit \" & iUnit.ToString & \" ERASE ROAD \"\n472:                                     Utilities.Log(sLogString, \"C:\\Gemba\\LOG\\\" & Utilities.GetApplicationName & \"\\transport\", \"Log \")"
+          },
+          {
+            "inicio": 706,
+            "fim": 808,
+            "texto": "706:             sSql = \"Select cd_unit, vl_status, cd_road from Units where vl_unit_function = 2 and vl_unit_type in (1,2,8,9) and cd_road = 0 and nr_production > 0 \"\n707: \n708:             'Check if routes need to be started\n709:             If Not eData.HasRows(sSql) Then\n710: \n711:                 tmrVerifyTransport.Enabled = False\n712: \n713:                 sLogString = \"TRANSPORT VERIFY STOP -- pubVerifyNormalTransportAvailable \"\n714:                 Utilities.Log(sLogString, \"C:\\Gemba\\LOG\\\" & Utilities.GetApplicationName & \"\\transport\", \"Log \")\n715: \n716:                 Exit Sub\n717:             End If\n718: \n719:             Utilities.Log(\"#00 pubVerifyNormalTransportAvailable\", \"C:\\Gemba\\LOG\\\" & Utilities.GetApplicationName & \"\\Transport\", \"Log \")\n720: \n721:             ' Lets try to start\n722:             eData.Connect()\n723: \n724:             'First loop, the units\n725:             Using eDataReader As SqlDataReader = eData.SelectData(sSql)\n726: \n727:                 While eDataReader.Read\n728: \n729:                     'Cria array com os bits de status\n730:                     Dim iStatusArray(0) As Integer\n731:                     iStatusArray(0) = CInt(eDataReader(\"vl_status\"))\n732:                     Dim aeBitArray As New BitArray(iStatusArray)\n733:                     Dim iCodeUnit As Integer = CInt(eDataReader(\"cd_unit\"))\n734: \n735:                     Dim aeValues(3) As Object\n736:                     'Recupera dados do silo, produto, produção e batelada\n737:                     sSql = String.Format(\"SELECT cd_silo, cd_product, nr_production, nr_batch FROM Units WHERE cd_unit = {0}\", iCodeUnit)\n738:                     aeValues = eData.GetSelectMultiData(sSql)\n739:                     Dim iCodeSilo As Integer = CInt(aeValues(0))\n740:                     Dim iProduct As Integer = CInt(aeValues(1))\n741:                     Dim iCodeProduction As Integer = CInt(aeValues(2))\n742:                     Dim iCodeBatch As Integer = CInt(aeValues(3))\n743: \n744:                     sSql = \"select t.cd_road, t.vl_priority, t.vl_time_transport from TRA_Road t, TRA_Source ts, TRA_Road_Destination_Silo trd, Silo s  \" & _\n745:                            \" where ts.cd_unit = \" & iCodeUnit.ToString & _\n746:                            \" and trd.cd_silo = \" & iCodeSilo.ToString & _\n747:                            \" and trd.cd_road_destination = t.cd_road_destination \" & _\n748:                            \" and t.cd_source = ts.cd_source \" & _\n749:                            \" and t.vl_priority > 0 \" & _\n750:                            \" and s.vl_level <> 'H' and s.vl_level <> 'A' and s.vl_fill_block <> 'Y' and s.cd_silo = trd.cd_silo \" & _\n751:                            \" and ISNULL(t.tp_status, '') <> 'S' \" & _\n752:                            \" order by t.vl_priority \"\n753: \n754:                     eDataUnits.Connect()\n755: \n756:                     'Second loop, check per unit if a rroad is available\n757:                     Using eDataReaderUnits As SqlDataReader = eDataUnits.SelectData(sSql)\n758: \n759:                         While eDataReaderUnits.Read\n760: \n761:                             Dim iCodeRoad As Integer = CInt(eDataReaderUnits(\"cd_road\"))\n762: \n763:                             sLogString = \"VERIFY TEST ROAD: \" & iCodeRoad.ToString & \" : Unit \" & iCodeUnit.ToString\n764:                             Utilities.Log(sLogString, \"C:\\Gemba\\LOG\\\" & Utilities.GetApplicationName & \"\\transport\", \"Log \")\n765: \n766:                             'Check high level\n767: \n768:                             'Verifica o intertravamento da rota e os status dos equipamentos\n769:                             If eTransports.RoadInterlockRoadEquipmentStatus(iCodeRoad.ToString, True, True, False, iProduct) Then\n770: \n771:                                 eDataRoad.UpdateData(\"Update Units set cd_road = \" & iCodeRoad.ToString & \" where cd_unit = \" & iCodeUnit.ToString, True, False)\n772: \n773:                                 eTransports.StartTransport(iCodeRoad.ToString)\n774:                                 eTransports.ContinueTransport(iCodeRoad.ToString)\n775: \n776:                                 sLogString = \"TRANSPORT ROAD: \" & iCodeRoad.ToString & \" : Unit \" & iCodeUnit.ToString & \" INITIATE VERIFY STARTED \"\n777:                                 Utilities.Log(sLogString, \"C:\\Gemba\\LOG\\\" & Utilities.GetApplicationName & \"\\transport\", \"Log \")\n778: \n779:                                 'Envia os valores de pv e sp dos tempos dos transportes\n780:                                 pubSendTransportTime(iCodeUnit.ToString, CInt(eDataReaderUnits(\"vl_time_transport\")))\n781: \n782:                                 'Envia Unit para o CLP (Change Silo)\n783:                                 pubSendCommandUnit(CStr(iCodeUnit), Bits.BIT2, 1, \"Bit2\")\n784: \n785:                                 bFound = True\n786: \n787:                                 'Apaga os alarmes desta Unit caso haja algum\n788:                                 Alarm.DeleteAlarm(0, 3000 + iCodeUnit)\n789: \n790:                                 If pubIsTransportDosing(iCodeUnit) Then\n791:                                     'Atualiza novo silo na tabela Production_Batch_Reg_Destination\n792:                                     priProductionBatchRegDestination(iCodeProduction, iCodeBatch, iCodeSilo, 0)\n793:                                 End If\n794: \n795:                                 Exit While\n796: \n797:                             End If\n798: \n799:                             If bFound = False Then\n800: \n801:                                 sLogString = \"TRANSPORT : Unit \" & iCodeUnit.ToString & \" NOT STARTED, INITIATE VERIFY THREAD Command: \" & sSql\n802:                                 Utilities.Log(sLogString, \"C:\\Gemba\\LOG\\\" & Utilities.GetApplicationName & \"\\transport\", \"Log \")\n803: \n804:                                 'Apaga os alarmes desta Unit caso haja algum\n805:                                 Alarm.DeleteAlarm(0, 3000 + iCodeUnit)\n806: \n807:                                 'Criar os alarmes desta Unit caso haja algum\n808:                                 Alarm.CreateAlarm(\"Datamanager\", String.Format(gasMessage(89), pubGetSiloName(iCodeSilo), pubGetUnitName(iCodeUnit), iCodeProduction), 3000 + iCodeUnit, Alarm.AlarmCheck.acNone, gsDataBaseFile)"
+          }
+        ],
+        "caminho_relativo_repositorio": "DataManager/mdlTransportUpdateNormalTransport.vb"
+      },
+      {
+        "sha256": "0e131e2e1550fa38fd6cf12effcc552290221bdd414ecf538707112a66e4534c",
+        "trechos": [
+          {
+            "inicio": 2182,
+            "fim": 2283,
+            "texto": "2182:     Public Function RoadInterlockRoadEquipmentStatus(ByVal ksRoadCode As String, ByVal kbVerifyInterlock As Boolean, ByVal kbVerifyStatus As Boolean, ByVal bShowMessage As Boolean, ByVal kiProduct As Integer, Optional ByVal kbVerifyInterlockSimultaneous As Boolean = False) As Boolean\n2183: \n2184:         Try\n2185: \n2186:             Dim eData As New DtBase(gsDataBaseFile, gsCulture)\n2187: \n2188:             Dim bInterlock As Boolean = True\n2189:             Dim bStatus As Boolean = True\n2190: \n2191:             Dim sRoadInterlock As String = \"\"\n2192:             Dim sRoadStatus As String = \"\"\n2193: \n2194: \n2195:             If kbVerifyInterlockSimultaneous Then\n2196: \n2197:                 'Verifica o intertravamento dos equipmentos da rota com rotas simultanious\n2198:                 If Not RoadInterlockSimultaneous(ksRoadCode) Then\n2199: \n2200:                     'Se for solicitada a verificação de status dos equipamentos\n2201:                     If kbVerifyStatus Then\n2202: \n2203:                         'Verifica o status dos equipmentos da rota\n2204:                         If Not RoadEquipmentStatus(ksRoadCode) Then\n2205:                             bStatus = False\n2206:                             sRoadStatus &= eData.GetSelectData(\"Select nm_road from TRA_Road where cd_road = \" & ksRoadCode.ToString).ToString & \", \"\n2207:                         End If\n2208: \n2209:                     End If\n2210: \n2211:                 Else\n2212:                     bInterlock = False\n2213:                     sRoadInterlock &= eData.GetSelectData(\"Select nm_road from TRA_Road where cd_road = \" & ksRoadCode.ToString).ToString & \", \"\n2214:                 End If\n2215: \n2216:             ElseIf kbVerifyInterlock Then\n2217: \n2218:                 'Verifica o intertravamento dos equipmentos da rota\n2219:                 If Not RoadInterlock(ksRoadCode, kiProduct) Then\n2220: \n2221:                     'Se for solicitada a verificação de status dos equipamentos\n2222:                     If kbVerifyStatus Then\n2223: \n2224:                         'Verifica o status dos equipmentos da rota\n2225:                         If Not RoadEquipmentStatus(ksRoadCode) Then\n2226:                             bStatus = False\n2227:                             sRoadStatus &= eData.GetSelectData(\"Select nm_road from TRA_Road where cd_road = \" & ksRoadCode.ToString).ToString & \", \"\n2228:                         End If\n2229: \n2230:                     End If\n2231: \n2232:                 Else\n2233:                     bInterlock = False\n2234:                     sRoadInterlock &= eData.GetSelectData(\"Select nm_road from TRA_Road where cd_road = \" & ksRoadCode.ToString).ToString & \", \"\n2235:                 End If\n2236: \n2237:             Else\n2238: \n2239:                 'Se for solicitada a verificação de status dos equipamentos\n2240:                 If kbVerifyStatus Then\n2241: \n2242:                     'Verifica o status dos equipmentos da rota\n2243:                     If Not RoadEquipmentStatus(ksRoadCode) Then\n2244:                         bStatus = False\n2245:                         sRoadStatus &= eData.GetSelectData(\"Select nm_road from TRA_Road where cd_road = \" & ksRoadCode.ToString).ToString & \", \"\n2246:                     End If\n2247: \n2248:                 End If\n2249: \n2250:             End If\n2251: \n2252:             'Se a opção de mostrar mensagens for verdadeira\n2253:             If bShowMessage Then\n2254: \n2255:                 'Mostra mensagens se foram solicitados testes de intertravamento ou status\n2256:                 If bStatus = True And bInterlock = False Then\n2257:                     'Nenhuma rota disponível por causa do status dos equipamentos\n2258:                     MessageBox.Show(asMessage(2) & vbCrLf & String.Format(asMessage(4), Mid(sRoadInterlock, 1, sRoadInterlock.Length - 2)), asMessage(1), MessageBoxButtons.OK, MessageBoxIcon.Exclamation)\n2259:                 ElseIf bStatus = False And bInterlock = True Then\n2260:                     'Nenhuma rota disponível por causa do intertravamento \n2261:                     MessageBox.Show(asMessage(2) & vbCrLf & String.Format(asMessage(3), Mid(sRoadStatus, 1, sRoadStatus.Length - 2)), asMessage(1), MessageBoxButtons.OK, MessageBoxIcon.Exclamation)\n2262:                 End If\n2263: \n2264:             Else\n2265: \n2266:                 'Grava mensagens no log se foram solicitados testes de intertravamento ou status\n2267:                 If bStatus = True And bInterlock = False Then\n2268:                     'Nenhuma rota disponível por causa do status dos equipamentos\n2269:                     Utilities.Log(\"TESTE DE INTERTRAVAMENTO DA ROTA:\" & ksRoadCode.ToString & \" ERRO: \" & String.Format(asMessage(4), Mid(sRoadInterlock, 1, sRoadInterlock.Length - 2)), \"C:\\Gemba\\LOG\\\" & Utilities.GetApplicationName & \"\\transport\", \"Log_Interlok \")\n2270:                 ElseIf bStatus = False And bInterlock = True Then\n2271:                     'Nenhuma rota disponível por causa do intertravamento \n2272:                     Utilities.Log(\"TESTE DE INTERTRAVAMENTO DA ROTA:\" & ksRoadCode.ToString & \" ERRO: \" & String.Format(asMessage(3), Mid(sRoadStatus, 1, sRoadStatus.Length - 2)), \"C:\\Gemba\\LOG\\\" & Utilities.GetApplicationName & \"\\transport\", \"Log_Interlok \")\n2273:                 End If\n2274: \n2275:             End If\n2276: \n2277:             RoadInterlockRoadEquipmentStatus = bStatus And bInterlock\n2278: \n2279:         Catch ex As Exception\n2280:             Utilities.Log(ex.Message.ToString & ex.StackTrace.ToString, \"C:\\Gemba\\LOG\\\" & Utilities.GetApplicationName, \"Log \")\n2281:         End Try\n2282: \n2283:     End Function"
+          }
+        ],
+        "caminho_relativo_repositorio": "Transports/clsTransports.vb"
+      }
+    ]
+  },
+  "politica_armazenamento": {
+    "destino_previsto": "banco_de_dados",
+    "estado_decisao": "em_definicao_sem_escolha_de_tecnologia_ou_implementacao",
+    "identificacao_evidencias": "Identificadores de ocorrência, anexo, evidência e fonte; nome do arquivo sem diretório e localizador de trecho",
+    "caminhos_padrao_permitidos": "Somente caminhos de logs e outras saídas definidos no código do produto, usados como conhecimento/orientação de coleta e associados à versão",
+    "caminhos_micro_local_permitidos": false,
+    "caminhos_compartilhamentos_ambiente_permitidos": false,
+    "executar_acesso_a_caminhos_cliente": false,
+    "referencia_codigo": "Versão, revisão, caminho relativo no repositório, método/linhas e hash; sem diretório local do checkout",
+    "registro_anexo_campos_propostos": [
+      "anexo_id",
+      "ocorrencia_id",
+      "nome_arquivo_sem_diretorio",
+      "tipo",
+      "data_recebimento",
+      "periodo_conteudo",
+      "hash_conteudo"
+    ],
+    "registro_evidencia_campos_propostos": [
+      "evidencia_id",
+      "ocorrencia_id",
+      "anexo_id_ou_fonte_id",
+      "localizador_trecho",
+      "conteudo_interpretado",
+      "estado_validacao"
+    ],
+    "arquivo_recebido": "Conteúdo ou identificador interno gerenciado pela plataforma; definição de armazenamento físico permanece em aberto, sem caminho do computador de origem",
+    "saneamento_ingestao": "Antes de persistir conteúdo derivado de anexos, substituir caminhos locais e de rede específicos por referências lógicas; preservar caminhos padrão confirmados no código do produto. Tratamento do arquivo original recebido será definido à parte."
+  },
+  "catalogo_fontes": [
+    {
+      "fonte_id": "evidencias_atendimento",
+      "nome_importacao": "06_evidencias/tickets.jsonl",
+      "localizador_registros": "dados.evidencia_id"
+    },
+    {
+      "fonte_id": "evidencias_processos",
+      "nome_importacao": "06_evidencias/processos.jsonl",
+      "localizador_registros": "dados.evidencia_id"
+    },
+    {
+      "fonte_id": "esquema_agpr5_referencia_2026_10_30",
+      "nome_importacao": "04_banco_dados/referencia/estrutura_banco.json",
+      "localizador_registros": "objetos.object_id",
+      "escopo": "Copia de referencia associada pelo usuario a DevGembaMillV2026.4.4.1.0; nao e snapshot da ocorrencia C007 de 2024",
+      "versao_aplicacao_associada": {
+        "versao": "DevGembaMillV2026.4.4.1.0",
+        "origem": "Informada pelo usuario nesta conversa",
+        "data_registro": "2026-10-30",
+        "escopo": "Associacao da copia de banco a versao do software; nao e homologacao de todas as regras ou comparacao integral de esquemas"
+      }
+    }
+  ],
+  "evidencias_originais_ocorrencia": {
+    "estado": "nao_anexadas_nesta_sessao",
+    "origem_documental": "interacao_156930",
+    "forma_obtencao_aplicacao": "anexo_usuario",
+    "localizador_armazenamento_futuro": "anexo_id",
+    "limite": "Conclusões históricas apoiadas em transcrições e documentos; arquivos originais não reanalisados"
+  }
+}

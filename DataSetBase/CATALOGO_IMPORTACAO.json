@@ -1,0 +1,8 @@
+{
+  "schema_versao": "1.0.0",
+  "pacote_preparado": "1.0.0",
+  "catalogo": "pacote_importacao/v1_2026-10-30/catalogo_importacao.json",
+  "catalogo_sha256": "4e0dac85971e57a7cb08d6979678f7bd51c4ce3fbb7edd4bb875b91cbc849733",
+  "publicado_em_producao": false,
+  "instrucao": "Importar somente entradas autorizadas pelo catalogo. CSVs originais, _historico e outras versoes nao entram automaticamente na carga."
+}

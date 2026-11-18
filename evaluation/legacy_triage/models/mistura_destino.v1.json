@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "id": "mistura_destino",
+  "version": "1.0.0",
+  "title": "Mistura transportada para o silo incorreto",
+  "description": "Investigar a transição de rota entre produções, relacionando relato, contexto e arquivos da ocorrência.",
+  "source": {
+    "entity_id": "triagem:TRIAGEM_MISTURA_DESTINO_001",
+    "package_version": "1.0.0",
+    "content_sha256": "4bf37983a716071f6c88c4ec6ee2dfdd8182e0e4d21cf4f7bc877438b6b8186a",
+    "review": "piloto_para_revisao_tecnica"
+  },
+  "questions": [
+    {"id": "cliente", "text": "Qual é o cliente ou instalação desta ocorrência?", "type": "text", "context": true},
+    {"id": "versao", "text": "Qual é a versão efetivamente instalada do DataManager?", "type": "text", "context": true},
+    {"id": "data", "text": "Em que data aconteceu a ocorrência?", "type": "date", "context": true},
+    {"id": "inicio", "text": "A partir de qual horário devemos analisar os registros? Use o horário local da instalação.", "type": "time", "context": true},
+    {"id": "fim", "text": "Até qual horário devemos analisar? Um horário menor que o início indica passagem para o dia seguinte.", "type": "time", "context": true},
+    {"id": "units", "text": "Quais Units estão envolvidas? Informe os códigos separados por vírgula.", "type": "identifiers", "context": true},
+    {"id": "producao_anterior", "text": "Qual é o número da produção ou batelada anterior?", "type": "text", "context": true},
+    {"id": "producao_atual", "text": "Qual é o número da produção ou batelada afetada?", "type": "text", "context": true},
+    {"id": "silo_anterior", "text": "Qual era o silo da produção anterior?", "type": "text", "context": true},
+    {"id": "silo_esperado", "text": "Qual era o silo esperado para a produção atual?", "type": "text", "context": true},
+    {"id": "destino_unit_correto", "text": "O destino exibido na Unit estava correto para a produção atual?", "type": "choice", "options": [{"value":"sim","label":"Sim"},{"value":"nao","label":"Não"}]},
+    {"id": "rota_anterior_ativa", "text": "A rota para o silo anterior aparecia ativa durante a ocorrência?", "type": "choice", "options": [{"value":"sim","label":"Sim"},{"value":"nao","label":"Não"}]},
+    {"id": "produto_anterior_na_linha", "text": "Ainda havia produto da batelada anterior na linha?", "type": "choice", "options": [{"value":"sim","label":"Sim"},{"value":"nao","label":"Não"}], "when": {"question":"rota_anterior_ativa","equals":"sim"}},
+    {"id": "alarme", "text": "Houve alarme de intertravamento?", "type": "choice", "options": [{"value":"sim","label":"Sim"},{"value":"nao","label":"Não"}]},
+    {"id": "texto_alarme", "text": "Qual era o texto ou código completo do alarme?", "type": "text", "when": {"question":"alarme","equals":"sim"}}
+  ],
+  "evidence_requests": [
+    {"id":"E01","title":"Histórico de alarmes","message":"Anexe a exportação textual do histórico de alarmes da transição, com texto, código e horários.","alternative":"Se só houver uma imagem ou PDF, transcreva o trecho relevante em TXT e identifique a transcrição.","event_types":["alarm"],"always":true},
+    {"id":"E02","title":"Escolha e transição da rota","message":"Anexe os logs Transport e Log_Interlok da transição. Inclua Analysis quando pertinente à versão.","alternative":"Anexe uma exportação textual dos eventos de rota do mesmo período.","event_types":["route_test","route_start","route_stopping","route_stopped","route_status","route_erased","alarm"],"always":true},
+    {"id":"E05","title":"Ocupação e encerramento das Units","message":"Anexe os registros de Unit, produção e batelada, incluindo Log REG e Log_Unit do período.","alternative":"Anexe uma exportação CSV/JSON dos registros de produção e Unit, identificada por data e instalação.","event_types":["unit_event","production_erased"],"always":true},
+    {"id":"E03","title":"Comandos de escrita","message":"Anexe PLCWrite do período e dos equipamentos que determinam o destino.","alternative":"Anexe uma exportação textual dos comandos dos mesmos equipamentos e endereços.","event_types":["write_command"],"when":{"question":"rota_anterior_ativa","equals":"sim"}},
+    {"id":"E04","title":"Resultado das escritas","message":"Anexe Write correspondente aos comandos e endereços identificados.","alternative":"Anexe o diagnóstico textual do retorno da API de escrita para o mesmo período.","event_types":["write_ok","write_error","write_skipped"],"when":{"event":"write_command"}},
+    {"id":"E06","title":"Configuração de Unit, rota e destino","message":"Anexe a configuração vigente da ligação entre Unit, origem, rota, silo e equipamento em CSV ou JSON.","alternative":"Anexe uma transcrição identificada dos campos de cadastro pertinentes.","event_types":[],"when":{"question":"destino_unit_correto","equals":"nao"}},
+    {"id":"E07","title":"Retorno do equipamento","message":"Anexe registros do estado ou posição retornada pelo equipamento e identifique o período e os sinais cobertos.","alternative":"Anexe o diagnóstico textual do equipamento, informando sua relação com os comandos.","event_types":[],"when":{"event":"write_error"}},
+    {"id":"E08","title":"Dados da ocorrência","message":"Anexe exportações da produção/batelada, Unit e configuração que esclareçam as lacunas; informe a data do snapshot e a versão.","alternative":"Registre a indisponibilidade e encaminhe as lacunas para análise técnica.","event_types":[],"when":{"unavailable":"E05"}}
+  ],
+  "hypotheses": [
+    {"id":"H01","description":"Encerramento ou troca da rota anterior não concluído.","requires":["E01","E02","E05"]},
+    {"id":"H02","description":"Rota anterior acionada novamente durante a transição.","requires":["E02","E03","E05"]},
+    {"id":"H03","description":"Rota ou comandos incompatíveis com o destino esperado.","requires":["E02","E03","E06"]},
+    {"id":"H04","description":"Falha, descarte, substituição ou divergência de retorno da escrita.","requires":["E03","E04","E07"],"support_events":["write_error","write_skipped"]}
+  ],
+  "limits": [
+    "Hipóteses são candidatas; o fluxo não confirma causa nem prescreve alterações em produção.",
+    "Teste de intertravamento não comprova aprovação; escrita registrada não comprova movimento físico.",
+    "Write Skiped não comprova escrita. No ramo OPC Word de referência, Valor pode representar código de retorno.",
+    "Apagou a Unit de transporte pode imprimir produção, não o código da Unit.",
+    "Ausência de anexo ou de marcador não comprova ausência de evento. Formatos de log variam por versão."
+  ]
+}

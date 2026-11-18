@@ -1,0 +1,7 @@
+# Exportacoes de tickets e documentacao de clientes permanecem locais.
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.jsonl
+

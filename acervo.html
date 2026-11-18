@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pesquisar no acervo — Suporte</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="acervo.css">
+</head>
+<body data-page="knowledge">
+  <header class="knowledge-top"><a href="app.html">← Painel</a><strong>Acervo de conhecimento</strong><button class="ghost" id="knowledge-logout" type="button">Sair</button></header>
+  <main class="knowledge-main">
+    <h1>Qual sua dúvida?</h1>
+    <p class="knowledge-intro">Conte o que acontece. Vamos investigar juntos.</p>
+    <section id="knowledge-conversation" class="knowledge-conversation" aria-live="polite"></section>
+    <p class="error" id="knowledge-error" role="alert"></p>
+    <section id="knowledge-results" class="knowledge-results" aria-live="polite"></section>
+    <div class="knowledge-composer">
+    <form id="knowledge-form" class="knowledge-form">
+      <label for="knowledge-query" class="knowledge-visually-hidden">Descreva o problema ou responda ao assistente</label>
+      <textarea id="knowledge-query" rows="2" maxlength="1800" placeholder="Descreva o problema para o assistente"></textarea>
+      <button class="send" id="knowledge-submit" type="submit" aria-label="Enviar ao assistente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"/></svg></button>
+    </form>
+    <div class="knowledge-home-actions"><button class="ghost" type="button" id="knowledge-local">Pesquisar sem IA</button><button class="ghost" type="button" id="knowledge-reset">Nova investigação</button></div>
+    <p class="knowledge-disclosure">O assistente usa o Google Gemini. Envie apenas informações autorizadas para esse serviço.</p>
+    </div>
+    <dialog id="knowledge-document"><div class="knowledge-document-head"><h2 id="knowledge-document-title"></h2><button class="ghost" id="knowledge-close" type="button">Fechar</button></div><div id="knowledge-document-body"></div></dialog>
+  </main>
+  <script src="app.js"></script>
+  <script src="acervo.js"></script>
+</body>
+</html>

@@ -1,5 +1,8 @@
 import os
+from pathlib import Path
 from dotenv import load_dotenv
+from knowledge_search.config import Settings
+from knowledge_search.generation import GenerationSettings
 
 load_dotenv()
 
@@ -11,6 +14,8 @@ def _csv_env(name: str, default: str = "") -> list[str]:
 
 
 class Config:
+    GEMINI_SETTINGS = GenerationSettings.from_env()
+    KNOWLEDGE_SEARCH_SETTINGS = Settings.from_env()
     SECRET_KEY = os.getenv("FLASK_SECRET_KEY", DEFAULT_SECRET_KEY)
     DEBUG = os.getenv("FLASK_DEBUG", "false").lower() in ("1", "true", "yes")
     MAX_CONTENT_LENGTH = int(os.getenv("MAX_UPLOAD_MB", "10")) * 1024 * 1024
